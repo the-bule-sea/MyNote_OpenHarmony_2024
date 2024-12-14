@@ -1,6 +1,7 @@
 import router from '@ohos.router';
 
 import CustomTitle from '../component/CustomTitle'
+import CustomAddDialog from '../component/CustomAddDialog'
 
 
 
@@ -10,6 +11,8 @@ import CustomTitle from '../component/CustomTitle'
 
 struct Index {
 
+  // 是否展示新建memo自定义弹窗
+  @State isAddDialogShow: boolean = false
 
   build() {
     Stack({alignContent: Alignment.BottomEnd}) { // 堆叠布局，按钮放右下角
@@ -56,10 +59,10 @@ struct Index {
           offsetY: 15,
           offsetX: 15
         })
-        // .onClick(() => {
-        //   // this.isEditDialogShow = true
-        //   this.isAddDialogShow = true
-        // })
+        .onClick(() => {
+          // this.isEditDialogShow = true
+          this.isAddDialogShow = true
+        })
 
 
     }
