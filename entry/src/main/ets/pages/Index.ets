@@ -1,5 +1,5 @@
 import router from '@ohos.router';
-
+import CustomEditDialog from '../component/CustomEditDialog';
 import CustomTitle from '../component/CustomTitle'
 import CustomAddDialog from '../component/CustomAddDialog'
 
@@ -11,8 +11,33 @@ import CustomAddDialog from '../component/CustomAddDialog'
 
 struct Index {
 
-  // 是否展示新建memo自定义弹窗
+  // 是否展示新建笔记自定义弹窗
   @State isAddDialogShow: boolean = false
+
+  // 新建内容
+  @State addTitle:string = ''
+  @State addContent:string = ''
+
+  // 编辑笔记弹窗
+  @State isEditDialogShow : boolean = false
+
+  // 编辑内容
+  @State editContent:string = ''
+  @State editTitle:string = ''
+
+  // 当前note索引
+  editNoteIndex : number = -1
+
+  // 关闭方法
+  closeDialog = ()=>{
+    this.isAddDialogShow = false
+    this.addTitle = ''
+    this.addContent = ''
+    this.isEditDialogShow = false
+    this.editTitle = ''
+    this.editContent = ''
+    this.editNoteIndex = -1
+  }
 
   build() {
     Stack({alignContent: Alignment.BottomEnd}) { // 堆叠布局，按钮放右下角
@@ -63,7 +88,15 @@ struct Index {
           // this.isEditDialogShow = true
           this.isAddDialogShow = true
         })
+      // 新建弹窗
+      if (this.isAddDialogShow){
+        CustomAddDialog({addContent:$addContent, addTitle:$addTitle, onCreate:this.createNote, onClose:this.closeDialog})
+      }
 
+      // 编辑弹窗
+      if (this.isEditDialogShow){
+        CustomEditDialog({editContent:$editContent, editTitle:$editTitle, onClose:this.closeDialog, onDelete:this.deleteNote, onSave:this.saveNote})
+      }
 
     }
     .backgroundColor('#f1f1f3')
