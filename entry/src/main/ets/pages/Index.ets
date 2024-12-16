@@ -2,7 +2,8 @@ import router from '@ohos.router';
 import CustomEditDialog from '../component/CustomEditDialog';
 import CustomTitle from '../component/CustomTitle'
 import CustomAddDialog from '../component/CustomAddDialog'
-
+import CustomSearch from  '../component/CustomSearch'
+import Note from '../model/Note'
 
 
 @Entry
@@ -17,6 +18,9 @@ struct Index {
   // 新建内容
   @State addTitle:string = ''
   @State addContent:string = ''
+
+  // note列表
+  @State noteList: Note[] = []
 
   // 编辑笔记弹窗
   @State isEditDialogShow : boolean = false
@@ -39,6 +43,24 @@ struct Index {
     this.editNoteIndex = -1
   }
 
+  // 搜索
+  @State @Watch('onSearchKeywordsChange') keywords : string = ''
+  // 搜索过滤
+  onSearchKeywordsChange(){
+    if (this.keywords.length === 0){
+      this.noteList = this.originNoteList
+    } else{
+      let resultList : Note[] = []
+      for (const note of this.originNoteList){
+        // 标题或者具体内容过滤
+        if (note.content.includes(this.keywords) || note.title.includes(this.keywords)){
+          resultList.push(note)
+        }
+      }
+      this.noteList = resultList
+    }
+  }
+
   build() {
     Stack({alignContent: Alignment.BottomEnd}) { // 堆叠布局，按钮放右下角
 
@@ -47,6 +69,7 @@ struct Index {
         // 顶部标题
         CustomTitle()
         // 搜索栏
+
 
         // 笔记瀑布组件
         Scroll(){
