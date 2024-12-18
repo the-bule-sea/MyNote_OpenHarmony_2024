@@ -3,7 +3,9 @@ import CustomEditDialog from '../component/CustomEditDialog';
 import CustomTitle from '../component/CustomTitle'
 import CustomAddDialog from '../component/CustomAddDialog'
 import CustomSearch from  '../component/CustomSearch'
+import NoteList from '../component/NoteList'
 import Note from '../model/Note'
+
 
 
 @Entry
@@ -22,6 +24,9 @@ struct Index {
   // note列表
   @State noteList: Note[] = []
 
+  // 缓存note
+  originNoteList :Note[] = []
+
   // 编辑笔记弹窗
   @State isEditDialogShow : boolean = false
 
@@ -31,6 +36,18 @@ struct Index {
 
   // 当前note索引
   editNoteIndex : number = -1
+
+  // 点击
+  clickNote = (note:Note)=>{
+    for (let i = 0; i < this.originNoteList.length; i++){
+      if(this.originNoteList[i].id === note.id){ // 判断是否相等，然后进行后续操作
+        this.editNoteIndex  = i
+        this.isEditDialogShow = true
+        this.editContent = note.content
+        this.editTitle = note.title
+      }
+    }
+  }
 
   // 关闭方法
   closeDialog = ()=>{
