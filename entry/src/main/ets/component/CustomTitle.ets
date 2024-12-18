@@ -27,12 +27,6 @@ export default struct CustomTitle{
     }
     .margin({top:5, bottom:3})
     .backdropBlur(10)
-    // .shadow({
-    //   radius: 10,
-    //   color: '#CCCCCC',
-    //   offsetY: -10,
-    //   offsetX: 0
-    // })
     .height(56)
     .width('100%')
   }

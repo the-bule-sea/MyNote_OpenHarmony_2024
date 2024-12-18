@@ -1,4 +1,3 @@
-import router from '@ohos.router';
 import CustomEditDialog from '../component/CustomEditDialog';
 import CustomTitle from '../component/CustomTitle'
 import CustomAddDialog from '../component/CustomAddDialog'
@@ -6,6 +5,11 @@ import CustomSearch from  '../component/CustomSearch'
 import NoteList from '../component/NoteList'
 import Note from '../model/Note'
 
+// 整体代码思路参考开源:https://gitee.com/J-Design/easy-memo
+// CustomSearch , CustomAddDialog 与 CustomEditDialog 参考开源同上
+// 关系型数据库参考同上
+
+// 页面设计、组件设计原创
 
 
 @Entry
@@ -60,6 +64,62 @@ struct Index {
     this.editNoteIndex = -1
   }
 
+  // 新增
+  createNote = ()=>{
+    const date: Date = new Date()
+    const newNote : Note = new Note(0, date.getTime(), this.addTitle, this.addContent) // 当时加入编辑后，发现新增出问题了，原来是这里忘记从editContent改为addContent了
+    this.NoteTable.insertData(newNote, (id: number) => {
+      newNote.id = id
+      this.originNoteList.push(newNote)
+      this.noteList = this.originNoteList
+      this.closeDialog()
+    })
+  }
+
+  // 删除笔记
+  deleteNote = ()=>{
+    if (this.editNoteIndex !== -1) {
+      this.NoteTable.deleteData(this.originNoteList[this.editNoteIndex], () => {
+        this.originNoteList.splice(this.editNoteIndex, 1)
+        this.noteList = this.originNoteList
+        this.closeDialog()
+      })
+    }
+  }
+
+  // 修改笔记
+  saveNote = ()=>{
+    const date: Date = new Date()
+    this.originNoteList[this.editNoteIndex].content = this.editContent
+    this.originNoteList[this.editNoteIndex].updateTime = date.getTime()
+    this.originNoteList[this.editNoteIndex].title = this.editTitle
+    this.NoteTable.updateData(this.originNoteList[this.editNoteIndex], () => {
+      this.noteList = this.originNoteList
+      this.closeDialog()
+    })
+
+  }
+
+  // 页面初始化时加载的数据
+  aboutToAppear(){
+    this.originNoteList = []
+    this.noteList = []
+    this.keywords = ''
+    this.isAddDialogShow = false
+    this.isEditDialogShow = false
+    this.addTitle = ''
+    this.addContent = ''
+    this.editNoteIndex = -1
+    this.editTitle = ''
+    this.editContent = ''
+    this.NoteTable.getRdbStore(() => {
+      this.NoteTable.query((result: Note[]) => {
+        this.originNoteList = result
+        this.noteList = this.originNoteList
+      })
+    })
+  }
+
   // 搜索
   @State @Watch('onSearchKeywordsChange') keywords : string = ''
   // 搜索过滤
@@ -86,7 +146,9 @@ struct Index {
         // 顶部标题
         CustomTitle()
         // 搜索栏
-
+        CustomSearch({keywords:$keywords})
+          .padding(16)
+          .width('100%')
 
         // 笔记瀑布组件
         Scroll(){
@@ -143,8 +205,4 @@ struct Index {
     .width('100%')
     .height('100%')
   }
-
-
-
-
 }
