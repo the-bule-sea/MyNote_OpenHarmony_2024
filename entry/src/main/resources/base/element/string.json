@@ -6,11 +6,11 @@
     },
     {
       "name": "EntryAbility_desc",
-      "value": "description"
+      "value": "md风格的ArkUI原生笔记应用"
     },
     {
       "name": "EntryAbility_label",
-      "value": "label"
+      "value": "MyNote2"
     }
   ]
 }

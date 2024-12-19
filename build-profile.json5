@@ -1,6 +1,20 @@
 {
   "app": {
-    "signingConfigs": [],
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "C:\\Users\\Fu\\.ohos\\config\\auto_debug_HarmonyMyNote_com.ark.myapplication_30086000709903457.cer",
+          "storePassword": "0000001B803D3611BA72F878E9CC7FF4781C085825528B9C4A5A826540E5C0FA5154AE7E7A9EA4739558D5",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001B4A298C9096D506A6258380D33F8AFFAEAB517391A95D21E32B82F3502CC9925A4DED53236CB6FE",
+          "profile": "C:\\Users\\Fu\\.ohos\\config\\auto_debug_HarmonyMyNote_com.ark.myapplication_30086000709903457.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\Fu\\.ohos\\config\\auto_debug_HarmonyMyNote_com.ark.myapplication_30086000709903457.p12"
+        }
+      }
+    ],
     "compileSdkVersion": 9,
     "compatibleSdkVersion": 9,
     "products": [

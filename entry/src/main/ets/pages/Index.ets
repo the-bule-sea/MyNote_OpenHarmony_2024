@@ -1,15 +1,16 @@
+import router from '@ohos.router';
 import CustomEditDialog from '../component/CustomEditDialog';
-import CustomTitle from '../component/CustomTitle'
 import CustomAddDialog from '../component/CustomAddDialog'
-import CustomSearch from  '../component/CustomSearch'
-import NoteList from '../component/NoteList'
-import Note from '../model/Note'
-
-// 整体代码思路参考开源:https://gitee.com/J-Design/easy-memo
-// CustomSearch , CustomAddDialog 与 CustomEditDialog 参考开源同上
-// 关系型数据库参考同上
-
-// 页面设计、组件设计原创
+import CustomSearch from '../component/CustomSearch';
+import CustomTitle from '../component/CustomTitle'
+import NoteList from '../component/NoteList';
+import Note from '../model/Note';
+import NoteTable from '../database/NoteTable';
+import LoginDialog from '../component/LoginDialog';
+import { Server } from '../server/Server';
+import { pushToRemote, pushToRemoteCompletely, syncFromRemoteCompletely } from '../utils/DatabaseDiffAnalysis';
+import promptAction from '@ohos.promptAction';
+import { conveyToLocalId, conveyToRemoteId, storeLocalIdAndRdbID } from '../server/Model';
 
 
 @Entry
@@ -17,31 +18,64 @@ import Note from '../model/Note'
 @Preview
 
 struct Index {
+  // 初始化数据库
+  private  NoteTable = new NoteTable(()=>{
 
-  // 是否展示新建笔记自定义弹窗
-  @State isAddDialogShow: boolean = false
+  })
+
+  // 缓存的原始数组
+  originNoteList :Note[] = []
+
+  // note 列表
+  @State noteList: Note[] = []
+
+  // 新增笔记弹窗
+  @State isAddDialogShow : boolean = false
 
   // 新建内容
   @State addTitle:string = ''
   @State addContent:string = ''
 
-  // note列表
-  @State noteList: Note[] = []
-
-  // 缓存note
-  originNoteList :Note[] = []
+  // 新增笔记
+  createNote = ()=>{
+    const date: Date = new Date()
+    const newNote : Note = new Note(0, date.getTime(), this.addTitle, this.addContent) // 当时加入编辑后，发现新增出问题了，原来是这里忘记从editContent改为addContent了
+    this.server.createNotes(newNote.title, newNote.content).then(r => {
+        console.log('createNotes', JSON.stringify(r))
+        this.NoteTable.insertData(newNote, (id: number) => {
+          storeLocalIdAndRdbID(conveyToLocalId(r.data), id)
+          newNote.id = id
+          this.originNoteList.push(newNote)
+          this.noteList = this.originNoteList.sort((a, b) => b.updateTime - a.updateTime)
+      })
+    }).catch(e => {
+      console.log('createNote', e)
+      this.NoteTable.insertData(newNote, (id: number) => {
+        newNote.id = id
+        this.originNoteList.push(newNote)
+        this.noteList = this.originNoteList.sort((a, b) => b.updateTime - a.updateTime)
+      })
+    })
+    this.closeDialog()
+  }
 
   // 编辑笔记弹窗
   @State isEditDialogShow : boolean = false
 
-  // 编辑内容
+  //ifilk: 登录弹窗
+  @State isLoginDialogShow: boolean = false
+  @State username: string = ''
+  @State password: string = ''
+  server: Server
+
+  // 编辑暂存
   @State editContent:string = ''
   @State editTitle:string = ''
 
   // 当前note索引
   editNoteIndex : number = -1
 
-  // 点击
+  // 点击笔记卡片时的方法
   clickNote = (note:Note)=>{
     for (let i = 0; i < this.originNoteList.length; i++){
       if(this.originNoteList[i].id === note.id){ // 判断是否相等，然后进行后续操作
@@ -53,37 +87,27 @@ struct Index {
     }
   }
 
-  // 关闭方法
-  closeDialog = ()=>{
-    this.isAddDialogShow = false
-    this.addTitle = ''
-    this.addContent = ''
-    this.isEditDialogShow = false
-    this.editTitle = ''
-    this.editContent = ''
-    this.editNoteIndex = -1
-  }
-
-  // 新增
-  createNote = ()=>{
-    const date: Date = new Date()
-    const newNote : Note = new Note(0, date.getTime(), this.addTitle, this.addContent) // 当时加入编辑后，发现新增出问题了，原来是这里忘记从editContent改为addContent了
-    this.NoteTable.insertData(newNote, (id: number) => {
-      newNote.id = id
-      this.originNoteList.push(newNote)
-      this.noteList = this.originNoteList
-      this.closeDialog()
-    })
-  }
-
   // 删除笔记
-  deleteNote = ()=>{
+  deleteNote = () =>{
     if (this.editNoteIndex !== -1) {
-      this.NoteTable.deleteData(this.originNoteList[this.editNoteIndex], () => {
+      const note = this.originNoteList[this.editNoteIndex]
+      console.log('', note.id)
+      this.NoteTable.deleteData(note, () => {
         this.originNoteList.splice(this.editNoteIndex, 1)
-        this.noteList = this.originNoteList
-        this.closeDialog()
+        this.noteList = this.originNoteList.sort((a, b) => b.updateTime - a.updateTime)
+        conveyToRemoteId(note.id).then(r => {
+          this.server.deleteNoteById(r).then(m => {
+            promptAction.showToast({
+              message: '删除成功',
+            })
+          }).catch(e => {
+            console.log(e)
+          })
+        }).catch(e => {
+          console.log(e)
+        })
       })
+      this.closeDialog()
     }
   }
 
@@ -94,11 +118,75 @@ struct Index {
     this.originNoteList[this.editNoteIndex].updateTime = date.getTime()
     this.originNoteList[this.editNoteIndex].title = this.editTitle
     this.NoteTable.updateData(this.originNoteList[this.editNoteIndex], () => {
-      this.noteList = this.originNoteList
+      this.noteList = this.originNoteList.sort((a, b) => b.updateTime - a.updateTime)
+      pushToRemote(this.server, this.originNoteList[this.editNoteIndex]).catch(e => {
+        promptAction.showToast({
+          message: '无法推送到云端, ' + e,
+        })
+      })
       this.closeDialog()
     })
 
   }
+
+  // 关闭方法
+  closeDialog = ()=>{
+    this.isAddDialogShow = false
+    this.addTitle = ''
+    this.addContent = ''
+    this.isEditDialogShow = false
+    this.editTitle = ''
+    this.editContent = ''
+    this.editNoteIndex = -1
+
+    this.isLoginDialogShow = false
+  }
+
+  // ifilk: 登录提交
+  onSubmit = () => {
+    // 确保server对象单例
+    if (this.server === undefined)
+      this.server = new Server()
+
+    this.server.login(this.username, this.password).then(r => {
+      // 设置token
+      // console.log("设置token", r.headers['www-authorization'])
+      this.server.set_authorization_token(r.headers['www-authorization'])
+      this.isLoginDialogShow = false
+
+      promptAction.showToast({
+        message: '登录成功',
+      })
+
+      // 远程拉取更新
+      syncFromRemoteCompletely(this.server, this.NoteTable).then(result => {
+        promptAction.showToast({
+          message: '同步成功: ' + result.length,
+        })
+        this.originNoteList = result
+        this.noteList = this.originNoteList.sort((a, b) => b.updateTime - a.updateTime)
+      }).catch(e => {
+        //TODO 报错信息处理
+        console.log("syncFromRemoteCompletely失败", e)
+      })
+
+      // // 本地推送更新
+      // pushToRemoteCompletely(this.server, this.NoteTable).catch(e => {
+      //   //TODO 报错信息处理
+      //   console.log(e)
+      // })
+
+    }).catch(e => {
+      // TODO 弹窗提醒
+      // 打开LogDialog
+      this.isLoginDialogShow = true
+      promptAction.showToast({
+        message: '登录出现错误' + e.toString(),
+      })
+      console.log(e)
+    })
+  }
+
 
   // 页面初始化时加载的数据
   aboutToAppear(){
@@ -115,17 +203,40 @@ struct Index {
     this.NoteTable.getRdbStore(() => {
       this.NoteTable.query((result: Note[]) => {
         this.originNoteList = result
-        this.noteList = this.originNoteList
+        this.noteList = this.originNoteList.sort((a, b) => b.updateTime - a.updateTime)
       })
     })
+
+    // ifilk
+    this.isLoginDialogShow = true
+    // 确保server对象单例
+    if (this.server === undefined) {
+      this.server = new Server()
+    }
+    // else {
+    //   // 存在sever对象拉取更新
+    //
+    //   // 远程拉取更新
+    //   syncFromRemoteCompletely(this.server, this.NoteTable).catch(e => {
+    //     //TODO 报错信息处理
+    //     console.log(e)
+    //   })
+    //
+    //   // 本地推送更新
+    //   pushToRemoteCompletely(this.server, this.NoteTable).catch(e => {
+    //     //TODO 报错信息处理
+    //     console.log(e)
+    //   })
+    // }
   }
 
   // 搜索
   @State @Watch('onSearchKeywordsChange') keywords : string = ''
+
   // 搜索过滤
   onSearchKeywordsChange(){
     if (this.keywords.length === 0){
-      this.noteList = this.originNoteList
+      this.noteList = this.originNoteList.sort((a, b) => b.updateTime - a.updateTime)
     } else{
       let resultList : Note[] = []
       for (const note of this.originNoteList){
@@ -149,14 +260,13 @@ struct Index {
         CustomSearch({keywords:$keywords})
           .padding(16)
           .width('100%')
-
         // 笔记瀑布组件
         Scroll(){
           Column(){
             Flex({alignItems: ItemAlign.Start, justifyContent: FlexAlign.Start, wrap: FlexWrap.Wrap}){
               ForEach(
                 this.noteList,
-                (note:Note,index:number) =>{
+                (note:Note, index:number) =>{
                   NoteList({note:this.noteList[index], onNoteClick:this.clickNote})
                 },
                 (note:Note)=>{return note.content}
@@ -190,6 +300,7 @@ struct Index {
           // this.isEditDialogShow = true
           this.isAddDialogShow = true
         })
+
       // 新建弹窗
       if (this.isAddDialogShow){
         CustomAddDialog({addContent:$addContent, addTitle:$addTitle, onCreate:this.createNote, onClose:this.closeDialog})
@@ -200,6 +311,10 @@ struct Index {
         CustomEditDialog({editContent:$editContent, editTitle:$editTitle, onClose:this.closeDialog, onDelete:this.deleteNote, onSave:this.saveNote})
       }
 
+      // ifilk: 登录弹窗
+      if (this.isLoginDialogShow){
+        LoginDialog({username:$username, password:$password, onSubmit:this.onSubmit})
+      }
     }
     .backgroundColor('#f1f1f3')
     .width('100%')
