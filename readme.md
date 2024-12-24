@@ -10,6 +10,11 @@
 ## 项目简介
 ![图标](/showpic/icon_v4.png)
 
+视频展示链接：
+[BiliBili-It's MyNote!!!展示视频](https://www.bilibili.com/video/BV1hkkoYfExJ)
+说明文档pdf
+[It's MyNote!!!说明文档](/doc/MyNote-基于OpenHarmony的云笔记软件_ssl.pdf.pdf)
+
 `HarmonyMyNote!!!`是一个基于ArkUI+ArkTs、API9，使用鸿蒙生态的应用开发语言ArkTs，可运行在OpenHarmony、HarmonyOS系统的软件。
 参考md设计风格。
 本地存储使用了华为官方本地关系数据库RDB，实现了笔记的本地持久化存储。
@@ -38,6 +43,7 @@
 ![后台](/showpic/server.png)
 
 ## 开发日志
+请见[开发日志目录下md文件](/recap/server/Spring%20Data%20JPA.md)
 1. 2024.12.09: 
 - 新增 NoteList 组件，用于显示便签列表
 - 实现便签数据的存储和加载功能
