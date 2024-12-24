@@ -46,14 +46,14 @@ struct Index {
           storeLocalIdAndRdbID(conveyToLocalId(r.data), id)
           newNote.id = id
           this.originNoteList.push(newNote)
-          this.noteList = this.originNoteList.sort((a, b) => b.updateTime - a.updateTime)
+          this.noteList = this.originNoteList
       })
     }).catch(e => {
       console.log('createNote', e)
       this.NoteTable.insertData(newNote, (id: number) => {
         newNote.id = id
         this.originNoteList.push(newNote)
-        this.noteList = this.originNoteList.sort((a, b) => b.updateTime - a.updateTime)
+        this.noteList = this.originNoteList
       })
     })
     this.closeDialog()
@@ -78,8 +78,9 @@ struct Index {
   // 点击笔记卡片时的方法
   clickNote = (note:Note)=>{
     for (let i = 0; i < this.originNoteList.length; i++){
-      if(this.originNoteList[i].id === note.id){ // 判断是否相等，然后进行后续操作
+      if(this.originNoteList[i].id == note.id){ // 判断是否相等，然后进行后续操作
         this.editNoteIndex  = i
+        console.log('点击时index', this.editNoteIndex)
         this.isEditDialogShow = true
         this.editContent = note.content
         this.editTitle = note.title
@@ -90,11 +91,14 @@ struct Index {
   // 删除笔记
   deleteNote = () =>{
     if (this.editNoteIndex !== -1) {
+      console.log('this.editNoteIndex', this.editNoteIndex)
+      console.log(JSON.stringify(this.originNoteList))
       const note = this.originNoteList[this.editNoteIndex]
       console.log('', note.id)
       this.NoteTable.deleteData(note, () => {
         this.originNoteList.splice(this.editNoteIndex, 1)
-        this.noteList = this.originNoteList.sort((a, b) => b.updateTime - a.updateTime)
+        console.log(JSON.stringify(this.originNoteList))
+        this.noteList = this.originNoteList
         conveyToRemoteId(note.id).then(r => {
           this.server.deleteNoteById(r).then(m => {
             promptAction.showToast({
@@ -118,7 +122,7 @@ struct Index {
     this.originNoteList[this.editNoteIndex].updateTime = date.getTime()
     this.originNoteList[this.editNoteIndex].title = this.editTitle
     this.NoteTable.updateData(this.originNoteList[this.editNoteIndex], () => {
-      this.noteList = this.originNoteList.sort((a, b) => b.updateTime - a.updateTime)
+      this.noteList = this.originNoteList
       pushToRemote(this.server, this.originNoteList[this.editNoteIndex]).catch(e => {
         promptAction.showToast({
           message: '无法推送到云端, ' + e,
@@ -164,7 +168,7 @@ struct Index {
           message: '同步成功: ' + result.length,
         })
         this.originNoteList = result
-        this.noteList = this.originNoteList.sort((a, b) => b.updateTime - a.updateTime)
+        this.noteList = this.originNoteList
       }).catch(e => {
         //TODO 报错信息处理
         console.log("syncFromRemoteCompletely失败", e)
@@ -203,7 +207,7 @@ struct Index {
     this.NoteTable.getRdbStore(() => {
       this.NoteTable.query((result: Note[]) => {
         this.originNoteList = result
-        this.noteList = this.originNoteList.sort((a, b) => b.updateTime - a.updateTime)
+        this.noteList = this.originNoteList
       })
     })
 
@@ -236,7 +240,7 @@ struct Index {
   // 搜索过滤
   onSearchKeywordsChange(){
     if (this.keywords.length === 0){
-      this.noteList = this.originNoteList.sort((a, b) => b.updateTime - a.updateTime)
+      this.noteList = this.originNoteList
     } else{
       let resultList : Note[] = []
       for (const note of this.originNoteList){

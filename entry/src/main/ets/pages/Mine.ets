@@ -21,7 +21,6 @@ struct MinePage {
     let pasteData = pasteboard.createData(pasteboard.MIMETYPE_TEXT_PLAIN, text);
     // 获取系统剪贴板
     let systemPasteboard = pasteboard.getSystemPasteboard()
-
     // 将数据写入系统剪贴板
     systemPasteboard.setData(pasteData).then(() => {
       promptAction.showToast({
@@ -32,7 +31,6 @@ struct MinePage {
         message: err.message,
       })
     });
-
   }
 
   build() {

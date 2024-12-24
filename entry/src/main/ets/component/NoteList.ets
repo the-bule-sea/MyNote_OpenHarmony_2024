@@ -27,7 +27,7 @@ function getFormatTime(timeStamp:number):TimeFormat{
     range = '三天前'
   }
 
-  const month: string = (date.getMonth() + 1).toString().padStart(2, '0')
+  const month: string = (date.getMonth() + 1).toString().padStart(2, '0') // 确保结果字符串至少有两个字符长
   const day: string = date.getDate().toString().padStart(2, '0')
   const hours: string = date.getHours().toString().padStart(2, '0')
   const minute: string = date.getMinutes().toString().padStart(2, '0')

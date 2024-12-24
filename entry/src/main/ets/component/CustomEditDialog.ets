@@ -1,4 +1,5 @@
 @Component
+
 export default struct CustomEditDialog{
 
   @Link editContent : string
