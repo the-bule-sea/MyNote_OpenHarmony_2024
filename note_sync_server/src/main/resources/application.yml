@@ -1,0 +1,61 @@
+logging:
+  config: classpath:logback-spring.xml
+
+server:
+  port: 3001
+  servlet:
+    context-path: /api/v1
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: KLNMhjvb0
+    url: jdbc:postgresql://localhost:5432/notes
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
+    show-sql: true
+  web:
+    resources:
+      static-locations: file:${web.upload-path},classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/
+  cache:
+    cache-names:
+      - userNotes
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=10m
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: xyz.ifilk.note_sync_server
+
+web:
+  upload-path: D:/Project/note_sync_server/web_data
+
+sa-token:
+  token-name: www-authorization
+  timeout: 2592000
+  active-timeout: -1
+  is-concurrent: true
+  is-share: true
+  token-style: uuid
+  is-log: true
+
+limiter:
+  # 服务器最大令牌桶容量
+  capacity: 500
+  # 允许一个IP在300秒中访问100次
+  ip-limit: 100
