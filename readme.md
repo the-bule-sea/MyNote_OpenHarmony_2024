@@ -8,7 +8,7 @@
     - 队伍成员：胡琦、蔡振中、孙胜雷
     - 指导老师：徐曼
 ## 项目简介
-![图标](showpic\\icon_v4.png)
+![图标](/showpic/icon_v4.png)
 `HarmonyMyNote!!!`是一个基于ArkUI+ArkTs、API9，使用鸿蒙生态的应用开发语言ArkTs，可运行在OpenHarmony、HarmonyOS系统的软件。
 参考md设计风格。
 本地存储使用了华为官方本地关系数据库RDB，实现了笔记的本地持久化存储。
@@ -20,16 +20,22 @@
 ## 项目截图
 演示：
 ![演示](/showpic/demo.gif)
+
 首页：
 ![首页](/showpic/index_page.png)
+
 我的界面(图1为原始版本，图2为后续版本)：
 ![我的](/showpic/mine_page.png)
+
 弹窗：
 ![弹窗](/showpic/dialog.png)
+
 图标设计：
 ![图标](/showpic/icon.png)
+
 后台：
 ![后台](/showpic/server.png)
+
 ## 项目结构
 Harmony软件项目结构如下：
 ```
