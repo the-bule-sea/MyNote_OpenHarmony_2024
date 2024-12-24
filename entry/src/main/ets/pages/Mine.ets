@@ -23,6 +23,7 @@ struct MinePage {
     let systemPasteboard = pasteboard.getSystemPasteboard()
     // 将数据写入系统剪贴板
     systemPasteboard.setData(pasteData).then(() => {
+      // Toast弹窗提示
       promptAction.showToast({
         message: '地址复制成功',
       })

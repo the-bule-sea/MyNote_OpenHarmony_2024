@@ -27,7 +27,7 @@ export function syncFromRemoteCompletely(server: Server, db: NoteTable): Promise
       let local = []
       for (let i = 0; i < remote.length; i++) {
         const element = remote[i]
-        // md 全删了
+        // 先删除
         db.deleteAll(() => {
           db.insertData(element, (id: number) => {
             storeLocalIdAndRdbID(element.id, id)
@@ -37,6 +37,7 @@ export function syncFromRemoteCompletely(server: Server, db: NoteTable): Promise
           resolve(local)
         })
       }
+      // 差量分析代码
       // db.getRdbStore(() => {
       //   db.query((result: Note[]) => {
       //     let updatedRowsCount = 0

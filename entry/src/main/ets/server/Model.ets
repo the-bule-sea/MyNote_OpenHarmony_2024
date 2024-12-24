@@ -1,3 +1,5 @@
+// 此页代码原创
+
 import Note from '../model/Note'
 import dataPreference from '@ohos.data.preferences'
 import preferences from '@ohos.data.preferences'

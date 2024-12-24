@@ -1,3 +1,5 @@
+// 此页日志代码参考开源项目[基于ArkTS的笔记Demo练习应用](https://gitee.com/J-Design/easy-memo)
+
 import hilog from '@ohos.hilog'
 
 class Logger {

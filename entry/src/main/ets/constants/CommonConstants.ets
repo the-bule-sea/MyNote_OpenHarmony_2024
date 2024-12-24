@@ -1,3 +1,5 @@
+// 持久化配置
+
 import relationalStore from '@ohos.data.relationalStore'
 import { NoteTable } from '../model/TableInterface'
 

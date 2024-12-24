@@ -12,6 +12,10 @@ import { pushToRemote, pushToRemoteCompletely, syncFromRemoteCompletely } from '
 import promptAction from '@ohos.promptAction';
 import { conveyToLocalId, conveyToRemoteId, storeLocalIdAndRdbID } from '../server/Model';
 
+// 与云端同步操作代码为原创
+// 此页代码中数据搜索过滤、弹窗方法参考[基于ArkTS的笔记Demo练习应用](https://gitee.com/J-Design/easy-memo)
+
+
 
 @Entry
 @Component
@@ -62,7 +66,7 @@ struct Index {
   // 编辑笔记弹窗
   @State isEditDialogShow : boolean = false
 
-  //ifilk: 登录弹窗
+  // ifilk: 登录弹窗
   @State isLoginDialogShow: boolean = false
   @State username: string = ''
   @State password: string = ''
@@ -170,7 +174,7 @@ struct Index {
         this.originNoteList = result
         this.noteList = this.originNoteList
       }).catch(e => {
-        //TODO 报错信息处理
+        // 报错信息处理
         console.log("syncFromRemoteCompletely失败", e)
       })
 
@@ -181,7 +185,7 @@ struct Index {
       // })
 
     }).catch(e => {
-      // TODO 弹窗提醒
+      // 弹窗提醒
       // 打开LogDialog
       this.isLoginDialogShow = true
       promptAction.showToast({
@@ -211,7 +215,7 @@ struct Index {
       })
     })
 
-    // ifilk
+    // 登录
     this.isLoginDialogShow = true
     // 确保server对象单例
     if (this.server === undefined) {
@@ -253,6 +257,7 @@ struct Index {
     }
   }
 
+  // arkui界面
   build() {
     Stack({alignContent: Alignment.BottomEnd}) { // 堆叠布局，按钮放右下角
 
@@ -315,7 +320,7 @@ struct Index {
         CustomEditDialog({editContent:$editContent, editTitle:$editTitle, onClose:this.closeDialog, onDelete:this.deleteNote, onSave:this.saveNote})
       }
 
-      // ifilk: 登录弹窗
+      // 登录弹窗
       if (this.isLoginDialogShow){
         LoginDialog({username:$username, password:$password, onSubmit:this.onSubmit})
       }

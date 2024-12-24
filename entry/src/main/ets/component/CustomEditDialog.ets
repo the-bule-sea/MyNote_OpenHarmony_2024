@@ -1,3 +1,5 @@
+// ArkUI设计部分参考开源项目[基于ArkTS的笔记Demo练习应用](https://gitee.com/J-Design/easy-memo)
+
 @Component
 
 export default struct CustomEditDialog{

@@ -1,3 +1,6 @@
+// ArkUI设计代码为原创
+// 时间格式化代码参考[基于ArkTS的笔记Demo练习应用](https://gitee.com/J-Design/easy-memo)
+
 import data from '@ohos.telephony.data'
 import Note from '../model/Note'
 

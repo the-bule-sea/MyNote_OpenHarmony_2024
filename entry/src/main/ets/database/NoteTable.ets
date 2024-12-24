@@ -1,3 +1,6 @@
+// RDB设计部分参考开源项目[基于ArkTS的笔记Demo练习应用](https://gitee.com/J-Design/easy-memo)
+// generateBucket()函数为原创
+
 import relationalStore from '@ohos.data.relationalStore';
 import Note from '../model/Note'
 import CommonConstants from '../constants/CommonConstants';

@@ -2,6 +2,8 @@ import relationalStore from '@ohos.data.relationalStore';
 import CommonConstants from '../constants/CommonConstants';
 import Logger from '../utils/Logger';
 
+// 参考开源项目[鸿蒙CodeLab案例](https://gitee.com/harmonyos/codelabs/tree/master/Rdb)
+
 // 抽象的Rdb类，没有业务属性，可以基于这个类创建带有业务属性的一张或多张表
 
 export default class Rdb {
