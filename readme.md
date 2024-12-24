@@ -19,17 +19,17 @@
 - 完成在HarmonyOS实机测试(Huawei P50-HarmonyOS 4.2, Huawei Nova9Pro-HarmonyOS 4.1)。
 ## 项目截图
 演示：
-![演示](showpic\\demo.gif)
+![演示](\\showpic\\demo.gif)
 首页：
-![首页](showpic\\index_page.png)
+![首页](\\showpic\\index_page.png)
 我的界面(图1为原始版本，图2为后续版本)：
-![我的](showpic\\mine_page.png)
+![我的](\\showpic\\mine_page.png)
 弹窗：
-![弹窗](showpic\\dialog.png)
+![弹窗](\\showpic\\dialog.png)
 图标设计：
-![图标](showpic\\icon.png)
+![图标](\\showpic\\icon.png)
 后台：
-![后台](showpic\\server.png)
+![后台](\\showpic\\server.png)
 ## 项目结构
 Harmony软件项目结构如下：
 ```
