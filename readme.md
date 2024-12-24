@@ -19,17 +19,17 @@
 - 完成在HarmonyOS实机测试(Huawei P50-HarmonyOS 4.2, Huawei Nova9Pro-HarmonyOS 4.1)。
 ## 项目截图
 演示：
-![演示](\\showpic\\demo.gif)
+![演示](/showpic/demo.gif)
 首页：
-![首页](\\showpic\\index_page.png)
+![首页](/showpic/index_page.png)
 我的界面(图1为原始版本，图2为后续版本)：
-![我的](\\showpic\\mine_page.png)
+![我的](/showpic/mine_page.png)
 弹窗：
-![弹窗](\\showpic\\dialog.png)
+![弹窗](/showpic/dialog.png)
 图标设计：
-![图标](\\showpic\\icon.png)
+![图标](/showpic/icon.png)
 后台：
-![后台](\\showpic\\server.png)
+![后台](/showpic/server.png)
 ## 项目结构
 Harmony软件项目结构如下：
 ```
@@ -65,7 +65,54 @@ Harmony软件项目结构如下：
 ```
 
 后台服务器代码结构如下：
-
+```
+- src
+  - main
+    - kotlin
+      - xyz
+        - ifilk
+          +-- note_sync_server
+            +-- common
+              - HashUtil.kt
+              - ServletUtil.kt
+            +-- config
+              - CacheConfig.kt
+              - SwaggerConfig.kt
+              - WebConfigurerAdapter.kt
+            +-- controller
+              - ExceptionController.kt
+              - NoteController.kt
+              - UserController.kt
+            +-- entity
+              - Note.kt
+              - User.kt
+            +-- exception
+              - DuplicateUserNameException.kt
+              - NoteNotFound.kt
+              - UnAuthorized.ke
+              - UserLoginVerifyException.kt
+              - UserNotFound.kt
+              - VerificationException.kt
+            +-- interceptor
+              - AccessLimiter.kt
+              - AccessLimiterBucket.kt
+              - AccessLimitInterceptor.kt
+            +-- model
+              - NoteApplyDto.kt
+              - NoteDto.kt
+            +-- repository
+              - NoteRepository.kt
+              - UserRepository.kt
+            +-- service
+              - NoteServiceImpl.kt
+              - UserServiceImpl.kt
+            - NoteSyncServerApplication.kt
+  - resources
+    - static
+    - templates
+    - application.yml
+    - logback-spring.xml
+```
 
 ## 项目参考
 - [OpenHarmony](https://gitee.com/openharmony)
