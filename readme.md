@@ -9,6 +9,7 @@
     - 指导老师：徐曼
 ## 项目简介
 ![图标](/showpic/icon_v4.png)
+
 `HarmonyMyNote!!!`是一个基于ArkUI+ArkTs、API9，使用鸿蒙生态的应用开发语言ArkTs，可运行在OpenHarmony、HarmonyOS系统的软件。
 参考md设计风格。
 本地存储使用了华为官方本地关系数据库RDB，实现了笔记的本地持久化存储。
