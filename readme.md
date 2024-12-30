@@ -5,7 +5,7 @@
 视频展示链接：
 [BiliBili-It's MyNote!!!展示视频](https://www.bilibili.com/video/BV1hkkoYfExJ)
 说明文档pdf
-[It's MyNote!!!说明文档](/doc/MyNote-基于OpenHarmony的云笔记软件_ssl.pdf)
+[It's MyNote!!!说明文档](/doc/MyNote-基于OpenHarmony的云笔记软件.pdf)
 
 `HarmonyMyNote!!!`是一个基于ArkUI+ArkTs、API9，使用鸿蒙生态的应用开发语言ArkTs，可运行在OpenHarmony、HarmonyOS系统的软件。
 参考md设计风格。
